@@ -3,6 +3,8 @@ import brand from '../../../config/brand';
 
 import cert1 from '../../../assets/images/cert1.webp'
 
+
+
 const AwardsSection = () => {
   // 9 awards ka array (Aap images ke links yahan change kar saktay hain)
   const awards = [

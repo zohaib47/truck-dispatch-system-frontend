@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { FiMapPin, FiChevronDown, FiArrowRight } from 'react-icons/fi';
-import companyimage from '../../../assets/images/company.png'
+import { Media_link } from '../../../assets/media';
 
 const LocationsSection = () => {
   const [activeTab, setActiveTab] = useState('Asia Pacific');
@@ -42,7 +42,7 @@ const LocationsSection = () => {
           <div className="lg:w-3/4">
             <div className="rounded-2xl overflow-hidden shadow-2xl mb-8">
               <img 
-                src={companyimage}
+                src={Media_link.company}
                 alt="Traxio Lahore Office" 
                 className="w-full h-[450px] object-cover"
               />

@@ -2,10 +2,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import brand from '../../../config/brand';
 import { FiPlay, FiX, FiTrendingUp, FiGlobe, FiUsers, FiAward, FiMapPin } from 'react-icons/fi';
 
-import safety from '../../../assets/images/Safety.webp'
-import sastainability from '../../../assets/images/Sustainability.webp'
-import efficiency from '../../../assets/images/efficency.jpeg'
-import aboutvideo from '../../../assets/video/intelligencevideo.webm';
+
+
+import { Media_link } from '../../../assets/media';
 
 
 import AwardSection from './AwardSection';
@@ -18,9 +17,9 @@ const AboutPage = () => {
   const [progress, setProgress] = useState(0);
 
   const missionTabs = [
-    { title: "Safety", desc: `${brand.name} helps people get home safely each and every day with AI-powered safety programs used to train and protect employees.`, img: safety },
-    { title: "Efficiency", desc: `${brand.name} helps organizations find inefficiencies with end-to-end visibility, so they can improve productivity and reduce costs.`, img: efficiency },
-    { title: "Sustainability", desc: `${brand.name} helps monitor carbon emissions and track fuel and energy usage, saving customers millions of gallons of fuel annually.`, img: sastainability }
+    { title: "Safety", desc: `${brand.name} helps people get home safely each and every day with AI-powered safety programs used to train and protect employees.`, img: Media_link.safety },
+    { title: "Efficiency", desc: `${brand.name} helps organizations find inefficiencies with end-to-end visibility, so they can improve productivity and reduce costs.`, img:Media_link.efficency },
+    { title: "Sustainability", desc: `${brand.name} helps monitor carbon emissions and track fuel and energy usage, saving customers millions of gallons of fuel annually.`, img: Media_link.sastainability }
   ];
 
   // ── Mission Tab Switching Logic ──
@@ -52,7 +51,7 @@ const AboutPage = () => {
       {/* ── 1. Video Hero Section (Refined) ── */}
       <section className="relative h-[80vh] w-full flex items-center justify-center overflow-hidden bg-black">
         <video autoPlay muted loop playsInline className="absolute z-10 w-full h-full object-cover opacity-60">
-          <source src={aboutvideo} type="video/webm" />
+          <source src={Media_link.intelligencevideo} type="video/webm" />
         </video>
         <div className="absolute z-20 inset-0 bg-gradient-to-b from-transparent to-black/40" />
 

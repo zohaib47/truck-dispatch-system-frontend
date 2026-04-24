@@ -1,279 +1,156 @@
 import React, { useState, useEffect } from 'react';
-import { LuActivity, LuMapPin, LuNavigation, LuUser, LuWeight, LuMap, LuPackage, LuLoader } from "react-icons/lu";
-import API from '../../services/api';
+import { getAllLoads } from '../../services/api'; // Aapki di hui API
+import { HiOutlineClock, HiOutlineTruck, HiOutlineCheckBadge } from 'react-icons/hi2';
 
-const ActiveLoad = () => {
-  const [loads, setLoads] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+const ActiveLoads = () => {
+    const [loads, setLoads] = useState([]);
+    const [activeTab, setActiveTab] = useState('pending'); // 'pending' | 'picked-up' | 'delivered'
+    const [loading, setLoading] = useState(true);
 
-  // ── Fetch assigned + dispatched + pending loads ──
-  useEffect(() => {
-    const fetchLoads = async () => {
-      try {
+    const fetchData = async () => {
         setLoading(true);
-        const response = await API.get('/load/all');
-
-        console.log("📦 RAW DATA:", response.data);
-
-        // 'pending' ko bhi filter mein shamil kiya taake wo dikh sakein
-        const activeData = response.data.filter(load =>
-          load.status === 'assigned' ||
-          load.status === 'dispatched' ||
-          load.status === 'pending'
-        );
-
-        setLoads(activeData);
-      } catch (err) {
-        console.error("Loads fetch error:", err);
-        setError("Loads load nahi ho sake");
-      } finally {
-        setLoading(false);
-      }
+        try {
+            const res = await getAllLoads();
+            setLoads(res.data);
+        } catch (err) {
+            console.error("Data fetch error:", err);
+        } finally {
+            setLoading(false);
+        }
     };
-    fetchLoads();
-  }, []);
 
-  // ── Status Style Helper (Update it to support pending) ──
-  const statusStyle = (status) => {
-    switch (status) {
-      case 'dispatched': return 'bg-emerald-500/10 text-emerald-500';
-      case 'assigned': return 'bg-blue-500/10 text-blue-500';
-      case 'pending': return 'bg-amber-500/10 text-amber-500'; // Amber color for pending
-      default: return 'bg-gray-500/10 text-gray-400';
-    }
-  };
+    useEffect(() => {
+        fetchData();
+    }, []);
 
-  const dotStyle = (status) => {
-    switch (status) {
-      case 'dispatched': return 'bg-emerald-500 animate-pulse';
-      case 'assigned': return 'bg-blue-500';
-      case 'pending': return 'bg-amber-500'; // Static amber dot
-      default: return 'bg-gray-400';
-    }
-  };
+    // Stats Calculation for Right Side
+    const stats = {
+        pendingCount: loads.filter(l => l.status === 'pending' || l.status === 'assigned').length,
+        acceptCount: loads.filter(l => l.status === 'picked-up').length
+    };
 
-  const transitCount = loads.filter(l => l.status === 'dispatched').length;
-  const assignedCount = loads.filter(l => l.status === 'assigned').length;
+    // Tab Filtering Logic
+    const filteredLoads = loads.filter(load => {
+        if (activeTab === 'pending') return load.status === 'pending' || load.status === 'assigned';
+        return load.status === activeTab;
+    });
 
-  // ... (Baki UI ka part same rahega)
-
-  return (
-    <div className="space-y-8 animate-fade-in pb-10">
-
-      {/* ── Header ── */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-black text-text-main flex items-center gap-3 uppercase italic">
-            <div className="relative">
-              <LuActivity className="text-brand-primary" size={24} />
-              <span className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full animate-ping" />
-            </div>
-            Live <span className="text-brand-primary">Dispatch</span> Center
-          </h2>
-          <p className="text-text-muted text-[10px] font-black uppercase tracking-[0.3em] mt-1 opacity-70">
-            Monitoring {loads.length} Active Fleet Units
-          </p>
-        </div>
-
-        <div className="hidden md:flex gap-3">
-          <div className="bg-app-card border border-border-main px-4 py-2 rounded-xl flex items-center gap-2">
-            <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-            <span className="text-[10px] font-black text-text-main uppercase">
-              Transit: {String(transitCount).padStart(2, '0')}
-            </span>
-          </div>
-          <div className="bg-app-card border border-border-main px-4 py-2 rounded-xl flex items-center gap-2">
-            <div className="w-2 h-2 bg-brand-primary rounded-full" />
-            <span className="text-[10px] font-black text-text-main uppercase">
-              Assigned: {String(assignedCount).padStart(2, '0')}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* ── Loading ── */}
-      {loading && (
-        <div className="flex items-center justify-center py-24 gap-3">
-          <LuLoader className="animate-spin text-brand-primary" size={22} />
-          <span className="text-[10px] font-black text-text-muted uppercase tracking-widest animate-pulse">
-            Loading Fleet Data...
-          </span>
-        </div>
-      )}
-
-      {/* ── Error ── */}
-      {!loading && error && (
-        <div className="text-center py-20 text-red-500 font-black text-sm uppercase">
-          {error}
-        </div>
-      )}
-
-      {/* ── Empty ── */}
-      {!loading && !error && loads.length === 0 && (
-        <div className="bg-app-card rounded-[2.5rem] border border-border-main p-20 text-center">
-          <LuPackage className="text-text-muted mx-auto mb-4" size={40} />
-          <p className="text-[10px] font-black text-text-muted uppercase tracking-widest">
-            Abhi koi active load nahi hai
-          </p>
-          <p className="text-xs text-text-muted mt-2 opacity-60">
-            Admin se load assign karwao
-          </p>
-        </div>
-      )}
-
-      {/* ── Load Cards ── */}
-      {!loading && !error && loads.length > 0 && (
-        <div className="grid grid-cols-1 gap-6">
-          {loads.map((load) => (
-            <div
-              key={load._id}
-              className="bg-app-card rounded-[2.5rem] border border-border-main shadow-sm hover:shadow-2xl hover:border-brand-primary/20 transition-all duration-500 overflow-hidden group"
-            >
-              <div className="flex flex-col lg:flex-row h-full">
-
-                {/* ── Left: Details ── */}
-                <div className="flex-[1.5] p-8 space-y-8">
-
-                  {/* Top Row */}
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-3">
-                      <span className="bg-app-bg text-brand-primary border border-border-main px-4 py-2 rounded-xl text-xs font-black italic tracking-widest">
-                        #{load._id.slice(-6).toUpperCase()}
-                      </span>
-                      {load.quoteAmount && (
-                        <span className="text-[10px] font-black text-text-muted uppercase tracking-widest bg-app-bg px-3 py-2 rounded-lg border border-border-main">
-                          PKR {Number(load.quoteAmount).toLocaleString()}
-                        </span>
-                      )}
-                    </div>
-                    <div className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-tighter flex items-center gap-2 ${statusStyle(load.status)}`}>
-                      <div className={`w-1.5 h-1.5 rounded-full ${dotStyle(load.status)}`} />
-                      {load.status}
-                    </div>
-                  </div>
-
-                  {/* Title */}
-                  {load.title && (
-                    <p className="text-xs font-black text-text-muted uppercase tracking-widest -mt-4">
-                      {load.title}
-                    </p>
-                  )}
-
-                  {/* Route Visualizer */}
-                  <div className="relative py-6">
-                    <div className="flex items-center justify-between relative z-10">
-                      <div className="text-left">
-                        <p className="text-[9px] font-black text-text-muted uppercase mb-1 tracking-widest">Origin</p>
-                        <h4 className="text-lg font-black text-text-main italic uppercase leading-none">
-                          {load.pickupLocation}
-                        </h4>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-[9px] font-black text-text-muted uppercase mb-1 tracking-widest">Destination</p>
-                        <h4 className="text-lg font-black text-text-main italic uppercase leading-none">
-                          {load.dropLocation}
-                        </h4>
-                      </div>
-                    </div>
-
-                    {/* Progress Bar */}
-                    <div className="absolute top-1/2 left-0 w-full h-1 bg-app-bg -translate-y-1/2 rounded-full overflow-hidden border border-border-main">
-                      <div
-                        className="h-full bg-gradient-to-r from-brand-primary to-brand-accent transition-all duration-1000"
-                        style={{ width: load.status === 'dispatched' ? '65%' : '15%' }}
-                      />
-                    </div>
-
-                    {/* Truck Icon */}
-                    <TruckIcon progress={load.status === 'dispatched' ? 65 : 15} />
-                  </div>
-
-                  {/* Info Pills */}
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-app-bg/50 p-4 rounded-2xl border border-border-main">
-                      <p className="text-[8px] font-black text-text-muted uppercase mb-1">Driver</p>
+    return (
+        <div className="min-h-screen bg-white p-6 md:p-10 font-sans">
+            <div className="max-w-7xl mx-auto">
+                
+                {/* --- HEADER & NAVIGATION --- */}
+                <div className="flex flex-col lg:flex-row justify-between items-center mb-16 gap-8">
                     
-                      <div className="flex items-center gap-2 text-xs font-black text-text-main italic">
-                        <LuUser className="text-brand-primary" size={14} />
-                        {/* Agar assignedTo null hai, to sirf "Unassigned" dikhao */}
-                        {load.assignedTo ? (
-                          load.assignedTo.fullName || load.assignedTo.name || "Unknown Driver"
+                    {/* 1. Title */}
+                    <div className="flex-shrink-0">
+                        <h1 className="text-3xl font-black italic uppercase tracking-tighter text-[#001529]">
+                            Fleet <span className="text-brand-primary">Monitor</span>
+                        </h1>
+                    </div>
+
+                    {/* 2. CENTER TABS (The Navigation) */}
+                    <div className="flex bg-[#F1F5F9] p-1.5 rounded-full border border-gray-100 shadow-inner">
+                        {[
+                            { id: 'pending', label: 'Pending', icon: <HiOutlineClock /> },
+                            { id: 'picked-up', label: 'Accepted/Live', icon: <HiOutlineTruck /> },
+                            { id: 'delivered', label: 'Completed', icon: <HiOutlineCheckBadge /> }
+                        ].map((tab) => (
+                            <button
+                                key={tab.id}
+                                onClick={() => setActiveTab(tab.id)}
+                                className={`flex items-center gap-2 px-10 py-3 rounded-full text-[10px] font-black uppercase italic transition-all ${
+                                    activeTab === tab.id 
+                                    ? 'bg-[#001529] text-white shadow-lg scale-105' 
+                                    : 'text-gray-400 hover:text-[#001529]'
+                                }`}
+                            >
+                                {tab.icon} {tab.label}
+                            </button>
+                        ))}
+                    </div>
+
+                    {/* 3. RIGHT STATS (Number Counters) */}
+                    <div className="flex items-center gap-6">
+                        <div className="flex flex-col items-end">
+                            <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest leading-none">Awaiting</span>
+                            <span className="text-xl font-black text-orange-500">{stats.pendingCount}</span>
+                        </div>
+                        <div className="h-8 w-[1px] bg-gray-100"></div>
+                        <div className="flex flex-col items-end">
+                            <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest leading-none">Live/Accepted</span>
+                            <span className="text-xl font-black text-green-500">{stats.acceptCount}</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* --- CONTENT GRID --- */}
+                {loading ? (
+                    <div className="text-center py-24 font-black text-gray-200 uppercase tracking-[0.5em] italic animate-pulse text-2xl">
+                        Updating Fleet Live...
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                        {filteredLoads.length > 0 ? (
+                            filteredLoads.map((load) => (
+                                <div key={load._id} 
+                                    className={`relative bg-white rounded-[3rem] p-10 border-2 transition-all duration-500 ${
+                                        load.status === 'picked-up' 
+                                        ? 'border-green-500 shadow-2xl shadow-green-100 bg-green-50/20 scale-[1.02]' 
+                                        : 'border-gray-50 shadow-sm hover:shadow-md'
+                                    }`}
+                                >
+                                    {/* Pulse Indicator */}
+                                    <div className="absolute top-8 right-10 flex items-center gap-2">
+                                        <span className={`h-2 w-2 rounded-full ${load.status === 'picked-up' ? 'bg-green-500 animate-ping' : 'bg-gray-200'}`}></span>
+                                        <span className="text-[8px] font-black text-gray-300 uppercase tracking-tighter italic">#{load._id.slice(-6)}</span>
+                                    </div>
+
+                                    <h3 className="text-xl font-black text-[#001529] uppercase italic mb-8 leading-tight pr-10">{load.title}</h3>
+                                    
+                                    <div className="space-y-6 relative mb-10">
+                                        {/* Minimal Dots for Location */}
+                                        <div className="flex items-start gap-4">
+                                            <div className="mt-1 h-2 w-2 rounded-full bg-[#001529]"></div>
+                                            <div>
+                                                <p className="text-[7px] font-black text-gray-400 uppercase tracking-widest mb-1">Pickup</p>
+                                                <p className="text-xs font-bold text-[#001529] uppercase">{load.pickupLocation}</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-start gap-4">
+                                            <div className="mt-1 h-2 w-2 rounded-full bg-brand-primary"></div>
+                                            <div>
+                                                <p className="text-[7px] font-black text-gray-400 uppercase tracking-widest mb-1">Destination</p>
+                                                <p className="text-xs font-bold text-[#001529] uppercase">{load.dropLocation}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="pt-8 border-t border-gray-100 flex justify-between items-end">
+                                        <div>
+                                            <p className="text-[7px] font-black text-gray-400 uppercase mb-1">Assigned Driver</p>
+                                            <p className="text-[11px] font-black text-brand-primary uppercase italic">
+                                                {load.assignedTo?.fullName || 'Awaiting Selection'}
+                                            </p>
+                                        </div>
+                                        <div className={`px-5 py-2 rounded-full text-[9px] font-black uppercase italic ${
+                                            load.status === 'picked-up' ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-400'
+                                        }`}>
+                                            {load.status === 'picked-up' ? 'In Progress' : 'Pending'}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
                         ) : (
-                          "Unassigned"
+                            <div className="col-span-full py-32 text-center bg-[#F8FAFC] rounded-[4rem] border-2 border-dashed border-gray-200">
+                                <p className="text-gray-300 font-black italic uppercase tracking-widest text-sm">No assignments found in {activeTab}</p>
+                            </div>
                         )}
-                      </div>
                     </div>
-                    <div className="bg-app-bg/50 p-4 rounded-2xl border border-border-main">
-                      <p className="text-[8px] font-black text-text-muted uppercase mb-1">Payload</p>
-                      <div className="flex items-center gap-2 text-xs font-black text-text-main italic">
-                        <LuWeight className="text-brand-accent" size={14} />
-                        {load.weight || 'N/A'}
-                      </div>
-                    </div>
-                    <div className="bg-app-bg/50 p-4 rounded-2xl border border-border-main">
-                      <p className="text-[8px] font-black text-text-muted uppercase mb-1">Assigned By</p>
-                      <div className="flex items-center gap-2 text-xs font-black text-text-main italic">
-                        <LuMapPin className="text-emerald-500" size={14} />
-                        {load.admin?.name || 'Admin'}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* ── Right: Map Placeholder ── */}
-                <div className="flex-1 bg-app-bg min-h-[250px] relative overflow-hidden border-l border-border-main group-hover:border-brand-primary/30 transition-all">
-                  <div
-                    className="absolute inset-0 opacity-20"
-                    style={{
-                      backgroundImage: 'radial-gradient(circle, #333 1px, transparent 1px)',
-                      backgroundSize: '30px 30px',
-                    }}
-                  />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center space-y-2">
-                      <div className="p-4 bg-brand-primary/10 rounded-full inline-block border border-brand-primary/20">
-                        <LuMap className="text-brand-primary animate-bounce" size={32} />
-                      </div>
-                      <p className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em]">
-                        Live Satellite Feed
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Bottom Card */}
-                  <div className="absolute bottom-6 left-6 right-6 bg-app-card/90 backdrop-blur-md p-4 rounded-2xl border border-border-main shadow-2xl">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-[8px] font-black text-brand-accent uppercase">Load ID</p>
-                        <p className="text-sm font-black text-text-main italic">
-                          #{load._id.slice(-6).toUpperCase()}
-                        </p>
-                      </div>
-                      <button className="bg-brand-primary text-white p-3 rounded-xl shadow-lg shadow-brand-primary/20 hover:scale-110 transition-transform">
-                        <LuNavigation size={18} />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
+                )}
             </div>
-          ))}
         </div>
-      )}
-    </div>
-  );
+    );
 };
 
-// ── Truck Icon on Progress Bar ──
-const TruckIcon = ({ progress }) => (
-  <div
-    className="absolute top-1/2 h-8 w-8 bg-brand-primary text-white rounded-lg flex items-center justify-center shadow-lg border-2 border-app-card -translate-y-1/2 transition-all duration-1000 z-20"
-    style={{ left: `calc(${progress}% - 16px)` }}
-  >
-    <LuNavigation size={16} className="rotate-90" />
-  </div>
-);
-
-export default ActiveLoad;
+export default ActiveLoads;

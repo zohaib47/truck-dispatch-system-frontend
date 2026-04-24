@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { FiTruck, FiUsers, FiPackage, FiTrendingUp, FiArrowRight, FiPhone } from "react-icons/fi";
+import brand from '../../../config/brand';
+import { Media_link } from '../../../assets/media';
 
-import truckvideo from '../../../assets/video/video1.mp4';
 
 import Navbar from '../../../components/layout/Navbar';
 import Footer from '../../../components/layout/Footer';
@@ -21,18 +22,7 @@ const LandingPage = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // useEffect(() => {
-  //   const fetchLiveStats = async () => {
-  //     try {
-  //       const truckRes = await axios.get('http://localhost:5000/api/truck/count');
-  //       const driverRes = await axios.get('http://localhost:5000/api/driver/count');
-  //       setStatsData({ trucks: truckRes.data.count, drivers: driverRes.data.count });
-  //     } catch (err) {
-  //       console.error("Backend connection error:", err);
-  //     }
-  //   };
-  //   fetchLiveStats();
-  // }, []);
+  
 
   const stats = [
     { id: 1, label: "Total Trucks", value: statsData.trucks || "28", icon: <FiTruck />, color: "text-[#C9971E]", bg: "bg-[#C9971E]/10", change: "↑ 2 Is Month Add" },
@@ -44,12 +34,6 @@ const LandingPage = () => {
   return (
     <div className="min-h-screen bg-[#F0F4FF] text-[#0F172A] font-sans">
 
-      {/* ────────────────────────────────────────────────
-          VIDEO HERO — h-screen so it goes BEHIND navbar
-          Your separate Navbar component sits above this
-          with position:fixed, so the video fills 100vh
-          including the navbar area automatically.
-      ──────────────────────────────────────────────── */}
       <section className="relative h-screen w-full flex items-center overflow-hidden">
 
         {/* Video — fills entire screen top to bottom */}
@@ -57,7 +41,7 @@ const LandingPage = () => {
           autoPlay muted loop playsInline
           className="absolute inset-0 z-0 w-full h-full object-cover"
         >
-          <source src={truckvideo} type="video/mp4" />
+          <source src={Media_link.video1} type="video/mp4" />
         </video>
 
         {/* Gradient overlay — heavy on left for text, lighter on right */}
@@ -112,7 +96,7 @@ const LandingPage = () => {
                 fontWeight: 500,
               }}
             >
-              FleetPro ke saath apne business ko digital banayein. Real-time tracking,
+              {brand.name} ke saath apne business ko digital banayein. Real-time tracking,
               dedicated trucks aur 98% on-time delivery — sirf aapke liye.
             </p>
 

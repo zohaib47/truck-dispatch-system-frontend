@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FiPlay, FiPause, FiX, FiZap } from 'react-icons/fi';
 
-import localvideo from '../../../assets/video/intelligencevideo.webm';
+// import localvideo from '../../../assets/video/intelligencevideo.webm';
+import { Media_link } from '../../../assets/media';
 
 const IntelligenceSection = () => {
   const [isPlaying, setIsPlaying] = useState(true);
@@ -109,7 +110,7 @@ const IntelligenceSection = () => {
                 autoPlay muted loop playsInline
                 className="w-full h-full object-cover opacity-80" >
 
-                <source src={localvideo} type="video/webm" />
+                <source src={Media_link.intelligencevideo} type="video/webm" />
                 
               </video>
 

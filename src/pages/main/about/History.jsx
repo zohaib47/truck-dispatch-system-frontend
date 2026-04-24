@@ -5,6 +5,7 @@ import brand from '../../../config/brand';
 import pic1 from '../../../assets/images/Leadership-new.webp'
 import pic2 from '../../../assets/images/Our_History_2020.webp'
 import pic3 from '../../../assets/images/Our_History_2018.webp'
+import { Media_link } from '../../../assets/media';
 
 const HistorySection = () => {
   // Scroll container ka reference
@@ -60,7 +61,7 @@ const HistorySection = () => {
                 <div className="border-t border-gray-100 pt-6 font-bold text-blue-600">Active: 2020</div>
               </div>
               <div className="md:w-1/2">
-                <img src={pic3} className="rounded-2xl shadow-lg" alt="2020" />
+                <img src={Media_link.leadership} className="rounded-2xl shadow-lg" alt="2020" />
               </div>
             </div>
           </div>
@@ -77,7 +78,7 @@ const HistorySection = () => {
                 <div className="border-t border-gray-100 pt-6 font-bold text-gray-400">Milestone: 2021</div>
               </div>
               <div className="md:w-1/2">
-                <img src={pic2} className="rounded-2xl shadow-lg" alt="2021" />
+                <img src={Media_link.ourHistory2018} className="rounded-2xl shadow-lg" alt="2021" />
               </div>
             </div>
           </div>
@@ -110,7 +111,7 @@ const HistorySection = () => {
           </div>
           <div className="md:w-1/2">
             <img 
-              src={pic1}
+              src={Media_link.ourHistory2020}
               className="rounded-2xl shadow-2xl w-full object-cover" 
               alt="Leaders" 
             />

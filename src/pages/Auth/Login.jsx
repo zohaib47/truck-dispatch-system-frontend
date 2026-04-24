@@ -44,7 +44,7 @@ const Login = () => {
             // Normal user ke liye Home page
             navigate('/'); 
           }
-        }, 1500);
+        });
       }
     } catch (error) {
       // Backend se bheja gaya error message
@@ -52,13 +52,13 @@ const Login = () => {
       const statusCode = error.response?.status;
 
       if (statusCode === 404) {
-        // Email nahi mili (Not Registered)
+        // (Not Registered)
         toast.error("You are not registered! Please create an account.");
       } else if (statusCode === 401) {
-        // Password galat hai (Invalid Password)
+        // (Invalid Password)
         toast.error("Invalid Password! Please try again.");
       } else {
-        // Koi aur server error
+       
         toast.error(errorMsg);
       }
     } finally {
