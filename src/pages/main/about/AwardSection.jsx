@@ -1,7 +1,7 @@
 import { FiAward } from 'react-icons/fi';
 import brand from '../../../config/brand';
 
-import cert1 from '../../../assets/images/cert1.webp'
+
 
 
 

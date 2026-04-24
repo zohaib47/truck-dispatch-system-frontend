@@ -2,9 +2,6 @@ import { useRef } from 'react';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import brand from '../../../config/brand';
 
-import pic1 from '../../../assets/images/Leadership-new.webp'
-import pic2 from '../../../assets/images/Our_History_2020.webp'
-import pic3 from '../../../assets/images/Our_History_2018.webp'
 import { Media_link } from '../../../assets/media';
 
 const HistorySection = () => {
