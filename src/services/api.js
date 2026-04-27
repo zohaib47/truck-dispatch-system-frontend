@@ -1,5 +1,4 @@
 import axios from 'axios';
-
 const API = axios.create({
   baseURL: 'https://truck-dispatch-system-backend.vercel.app/api',
   headers: {
