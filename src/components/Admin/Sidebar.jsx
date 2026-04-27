@@ -4,6 +4,7 @@ import {
   FiGrid, FiTruck, FiBox, FiUsers, FiLogOut, FiX, 
   FiFilePlus, FiMail, FiPlusCircle 
 } from "react-icons/fi";
+import { toast, Toaster } from 'react-hot-toast';
 import brand from '../../config/brand'
 
 const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {

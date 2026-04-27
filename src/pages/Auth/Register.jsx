@@ -11,7 +11,6 @@ const Register = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   
-  // Hide/Show States
   const [showPass, setShowPass] = useState(false);
   const [showConfirmPass, setShowConfirmPass] = useState(false);
 
@@ -25,38 +24,31 @@ const Register = () => {
  const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // 1. Password Match Validation
+   
     if (formData.password !== formData.confirmPassword) {
       return toast.error("Passwords do not match!");
     }
 
     setLoading(true);
     try {
-      // 2. Data clean karein (confirmPassword nikaal dein)
       const { confirmPassword, ...dataToSend } = formData;
       
-      // 3. Exact Backend URL (Port 5000)
       const response = await axios.post("https://truck-dispatch-system-backend.vercel.app/api/auth/register", dataToSend);
       
-      // 4. Status Code logic (Agar data save ho gaya hai to status 200 ya 201 hoga)
       if (response.status === 200 || response.status === 201) {
         toast.success("Account Created Successfully! 🚛");
         
-        // Registration ke baad Login page par bhej rahe hain
         setTimeout(() => navigate('/'), 2000); 
       }
     } catch (error) {
-  // 1. Agar backend ne error response bheja hai (e.g. 400, 404, 409)
   if (error.response) {
-    // Backend se jo message aa raha hai (maslan: "User already exists") wo toast mein dikhayega
     const backendMessage = error.response.data.message || "User already exists";
     toast.error(backendMessage); 
   } 
-  // 2. Agar backend tak request pohnchi hi nahi (Network Error)
   else if (error.request) {
     toast.error("No response from server. Check your connection.");
   } 
-  // 3. Koi aur masla
+ 
   else {
     toast.error("Registration failed. Please try again.");
   }
@@ -73,7 +65,7 @@ const Register = () => {
 
       <div className="max-w-[480px] w-full bg-app-card rounded-[2.5rem] shadow-2xl border border-border-main overflow-hidden animate-fade-in">
         
-        {/* Header */}
+ 
         <div className="bg-app-header p-8 text-center border-b border-border-main">
           <div className="inline-flex p-3 bg-brand-primary/10 rounded-xl mb-3">
             <FiTruck className="text-brand-primary" size={28} />
@@ -86,7 +78,7 @@ const Register = () => {
 
         <form onSubmit={handleSubmit} className="p-8 space-y-4">
           
-          {/* Full Name */}
+         
           <div className="relative">
             <FiUser className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" />
             <input 
@@ -97,7 +89,6 @@ const Register = () => {
             />
           </div>
 
-          {/* Email Address */}
           <div className="relative">
             <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" />
             <input 
@@ -109,7 +100,6 @@ const Register = () => {
           </div>
 
 
-          {/* Password with Hide/Show */}
           <div className="relative">
             <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" />
             <input 

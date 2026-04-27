@@ -27,16 +27,12 @@ const StatsOverview = () => {
         const loads = loadsRes.data || [];
         const drivers = driversRes.data || [];
 
-        // 1. Active Loads (Jo assigned ya in-transit hon)
         const active = loads.filter(l => l.status === 'assigned' || l.status === 'in-transit').length;
         
-        // 2. Loads Pending (Jo abhi tak dispatch nahi huye)
         const pending = loads.filter(l => l.status === 'pending').length;
 
-        // 3. Drivers Online (Maan lete hain status 'available' ya 'on-duty' online hai)
         const online = drivers.filter(d => d.status === 'available' || d.status === 'on-duty').length;
 
-        // 4. Total Revenue (Sirf 'delivered' loads ki price calculate karein)
         const revenue = loads
           .filter(l => l.status === 'delivered')
           .reduce((sum, current) => sum + (Number(current.price) || 0), 0);

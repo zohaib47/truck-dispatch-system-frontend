@@ -24,6 +24,7 @@ function App() {
   <Route path="/*" element={<MainRoutes />} />
   <Route path="/admin/*" element={<AdminRoutes />} />
   <Route path="/driver/*" element={<DriverRoutes />} />
+  <Route path="/forgot-password" element={<ForgotPassword/>} />
   
      
 </Routes>
