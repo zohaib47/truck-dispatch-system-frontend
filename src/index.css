@@ -53,23 +53,20 @@
 }
 
 
-.dark {
-  /* Background & Structure */
-  --color-app-bg: #0A1628;      /* Deep Navy (Aapki file se) */
-  --color-app-card: #111827;    /* Dark Slate for Cards */
-  --color-app-header: #0D1F3C;  /* Sidebar/Header Blue */
+/* .dark {
+  --color-app-bg: #0A1628;      
+  --color-app-card: #111827;    
+  --color-app-header: #0D1F3C; 
 
-  /* Royal Accents */
-  --color-brand-primary: #D4A843; /* The Signature Royal Gold */
-  --color-brand-accent: #F5CD6E;  /* Secondary Bright Gold */
+  --color-brand-primary: #D4A843; 
+  --color-brand-accent: #F5CD6E;  
 
-  /* Text & Contrast */
-  --color-text-main: #FFFFFF;     /* Pure White */
-  --color-text-muted: #8E9BB1;    /* Muted Slate Blue */
+  --color-text-main: #FFFFFF;   
+  --color-text-muted: #8E9BB1;    
 
 
-  --color-border-main: rgba(212, 168, 67, 0.15); /* Soft Gold Border */
-}
+  --color-border-main: rgba(212, 168, 67, 0.15); 
+} */
 
 
 @keyframes fadeIn {
