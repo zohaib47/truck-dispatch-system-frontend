@@ -13,13 +13,13 @@ const AdminRoutes = () => {
   return (
     <Routes>
       <Route element={<AdminLayout />}>
-        {/* Jab user sirf /admin par jaye */}
+       
         <Route index element={<AdminDashboard />} /> 
         
-        {/* Jab user /admin/inventory par jaye */}
+   
         <Route path="inventory" element={<Inventory />} />
         
-        {/* Jab user /admin/messages par jaye */}
+
         <Route path="messages" element={<ContactMessage />} />
         
         {/* Mazeed paths... */}

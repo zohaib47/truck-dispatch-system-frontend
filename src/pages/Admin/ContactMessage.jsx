@@ -1,22 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { FiMail, FiTrash2, FiUser, FiCalendar, FiMessageSquare, FiSearch, FiCornerUpLeft } from "react-icons/fi";
-import axios from 'axios';
+// axios ko remove kar diya kyunki ab hum apna API instance use kareinge
+import API from '../../services/api'; 
 import { notify } from '../../utils/toast';
 
 const ContactMessage = () => {
-
-  const API_BASE_URL = 'https://truck-dispatch-system-backend.vercel.app/api/contact';
   const [messages, setMessages] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const getAuthHeaders = () => {
-    const token = localStorage.getItem('token');
-    return { headers: { 'Authorization': `Bearer ${token}` } };
-  };
-
   const fetchMessages = async () => {
     try {
-      const res = await axios.get(`${API_BASE_URL}/all`, getAuthHeaders());
+      const res = await API.get('/contact/all');
       setMessages(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error("Fetch Error:", err);
@@ -24,16 +18,19 @@ const ContactMessage = () => {
     }
   };
 
-  useEffect(() => { fetchMessages(); }, []);
+  useEffect(() => { 
+    fetchMessages(); 
+  }, []);
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this message?")) {
       try {
-        await axios.delete(`${API_BASE_URL}/delete/${id}`, getAuthHeaders());
+        await API.delete(`/contact/delete/${id}`);
         setMessages(messages.filter(msg => msg._id !== id));
         notify.success("Message deleted successfully.");
       } catch (err) {
-        notify.error("Unable to delete message.");
+        const errorMsg = err.response?.data?.message || "Unable to delete message.";
+        notify.error(errorMsg);
       }
     }
   };

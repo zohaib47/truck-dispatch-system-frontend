@@ -1,5 +1,6 @@
 import axios from 'axios';
 const API = axios.create({
+  // baseURL: 'http://localhost:5000/api',
   baseURL: 'https://truck-dispatch-system-backend.vercel.app/api',
   headers: {
     'Content-Type': 'application/json',
@@ -18,6 +19,8 @@ API.interceptors.request.use((req) => {
 });
 
 
+
+
 // --- APIs ---
 export const createLoad = (loadData) => API.post('/load/create-load', loadData);
 
@@ -30,20 +33,13 @@ export const getActiveLoads = () => API.get('/load/all?status=assigned');
 export const getAllLoads     = () => API.get('/load/all');
 
 
-// Driver Dashboard Related APIs
 export const driverAPI = {
-    // 1. Get My Loads
     getMyLoads: () => API.get('/load/driver/my-load'),
     updateLoadStatus: (id, status) => API.put(`/load/update-status/${id}`, { status }),   
-    // Hum "status" ko object ke andar bhej rahe hain kyunke backend "req.body" use kar raha hai
     updateStatus: (status) => API.put('/driver/update-status', { status }),
 
-    // 3. Update Shipment Status (Picked-up/Delivered)
-    // Isme aksar humein loadId bhi chahiye hoti hai
-    // updateShipmentStatus: (loadId, status) => API.put(`/load/status/${loadId}`, { status })
 };
 export const loadAPI = {
-    // Ye function ID aur Status dono bhejega
     updateLoadStatus: (id, status) => API.put(`/load/driver/status/${id}`, { status }),
     
     

@@ -7,6 +7,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast, Toaster } from 'react-hot-toast';
 
+import API from '../../services/api'
+
 const Register = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -33,7 +35,7 @@ const Register = () => {
     try {
       const { confirmPassword, ...dataToSend } = formData;
       
-      const response = await axios.post("https://truck-dispatch-system-backend.vercel.app/api/auth/register", dataToSend);
+      const response = await API.post("/auth/register", dataToSend);
       
       if (response.status === 200 || response.status === 201) {
         toast.success("Account Created Successfully! 🚛");

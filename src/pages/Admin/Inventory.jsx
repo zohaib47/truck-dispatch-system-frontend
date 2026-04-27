@@ -1,22 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { FiTruck, FiPlus, FiSearch, FiEye, FiEdit2, FiTrash2, FiTag } from "react-icons/fi";
+import { FiTruck, FiPlus, FiSearch, FiEye, FiEdit2, FiTrash2 } from "react-icons/fi";
 import Modal from '../../components/ui/Modal';
 import { notify } from '../../utils/toast';
 import brand from '../../config/brand';
-import axios from 'axios';
-import API from '../../services/api'
-const Inventory = () => {
-  // --- CONFIGURATION ---
-  const API_BASE_URL = 'https://truck-dispatch-system-backend.vercel.app/api/truck';
-  
-  // Helper function to get headers (Reusable)
-  const getAuthHeaders = () => {
-    const token = localStorage.getItem('token');
-    return { 
-      headers: { 'Authorization': `Bearer ${token}` } 
-    };
-  };
+import API from '../../services/api';
 
+const Inventory = () => {
   const [fleet, setFleet] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('All');
@@ -33,70 +22,60 @@ const Inventory = () => {
     status: 'Available'
   });
 
-// 1. Fetch Trucks
-const fetchTrucks = async () => {
-  try {
-    const res = await axios.get(`${API_BASE_URL}/all`, getAuthHeaders());
-    
-    if (Array.isArray(res.data)) {
-      setFleet(res.data);
-    } else {
-      setFleet([]); 
-      notify.error("Data format sahi nahi hai!");
-    }
-  } catch (err) {
-    setFleet([]); 
-    if(err.response?.status === 401) {
-      notify.error("Session expired, please login again.");
-    } else {
-      notify.error("Trucks load not hua.");
-    }
-  }
-};
-
-useEffect(() => { fetchTrucks(); }, []);
-
-// 2. Add / Update Truck
-const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  const url = viewType === 'edit' 
-    ? `${API_BASE_URL}/update/${selectedTruck._id}`
-    : `${API_BASE_URL}/add`;
-  
-  const method = viewType === 'edit' ? 'put' : 'post';
-
-  try {
-    await axios[method](url, formData, getAuthHeaders());
-   
-    setIsModalOpen(false);
-    setTimeout(() => {
-    fetchTrucks();
-}, 500);
-
-   
-    notify.success(viewType === 'edit' ? "Truck updated" : "Add New truck successfully");
-
-  } catch (err) {
-    
-    notify.error(err.response?.data?.msg || "Action failed!");
-  }
-};
-
-// 3. Delete Truck
-const handleDelete = async (id) => {
-  if(window.confirm("Do you want to delete truck?")) {
+  // 1. Fetch Trucks
+  const fetchTrucks = async () => {
     try {
-      await axios.delete(`${API_BASE_URL}/delete/${id}`, getAuthHeaders());
-      fetchTrucks();
-      // Alert removed, Toast added
-      notify.info("Truck delete successfully.");
-    } catch (err) { 
-      // Alert removed, Toast added
-      notify.error("Can't Delete "); 
+      const res = await API.get('/truck/all');
+      if (Array.isArray(res.data)) {
+        setFleet(res.data);
+      }
+    } catch (err) {
+      setFleet([]);
+      const msg = err.response?.status === 401 ? "Session expired" : "Failed to load trucks";
+      notify.error(msg);
     }
-  }
-};
+  };
+
+  useEffect(() => { fetchTrucks(); }, []);
+
+  // 2. Add / Update Truck
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    // Backend expects capacity as an object usually, mapping it here
+    const dataToSend = {
+      ...formData,
+      capacity: { value: formData.capacityValue }
+    };
+
+    try {
+      if (viewType === 'edit') {
+        await API.put(`/truck/update/${selectedTruck._id}`, dataToSend);
+        notify.success("Truck updated successfully");
+      } else {
+        await API.post('/truck/add', dataToSend);
+        notify.success("New truck added successfully");
+      }
+      
+      setIsModalOpen(false);
+      fetchTrucks();
+    } catch (err) {
+      notify.error(err.response?.data?.message || "Action failed!");
+    }
+  };
+
+  // 3. Delete Truck
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this truck?")) {
+      try {
+        await API.delete(`/truck/delete/${id}`);
+        fetchTrucks();
+        notify.info("Truck deleted successfully.");
+      } catch (err) {
+        notify.error("Unable to delete truck.");
+      }
+    }
+  };
 
   // Filter Logic
   const filteredFleet = fleet.filter(t => 
@@ -119,10 +98,12 @@ const handleDelete = async (id) => {
       {/* Header & Search Area */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-app-card p-6 rounded-[2rem] border border-border-main shadow-sm">
         <div>
-          <h2 className="text-xl font-black text-text-main flex items-center  uppercase italic">
-            <FiTruck className="text-brand-primary mr-2" />{brand.name.replace(brand.highlight, "")} <span className="text-brand-primary"> {brand.highlight} </span>
+          <h2 className="text-xl font-black text-text-main flex items-center uppercase italic">
+            <FiTruck className="text-brand-primary mr-2" />
+            {brand.name.replace(brand.highlight, "")} 
+            <span className="text-brand-primary ml-1">{brand.highlight}</span>
           </h2>
-          <p className="text-[10px] text-text-muted font-bold uppercase tracking-widest mt-1">Total: {fleet.length}</p>
+          <p className="text-[10px] text-text-muted font-bold uppercase tracking-widest mt-1">Total Fleet: {fleet.length}</p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
@@ -141,14 +122,14 @@ const handleDelete = async (id) => {
               setFormData({truckName:'', plateNumber:'', truckType:'Mini Truck', capacityValue:'', ownerName:'', status:'Available'}); 
               setIsModalOpen(true); 
             }}
-            className="bg-brand-primary text-white px-5 py-3 rounded-xl font-black flex items-center gap-2 text-[10px] uppercase tracking-widest hover:opacity-90 transition-all"
+            className="bg-brand-primary text-white px-5 py-3 rounded-xl font-black flex items-center gap-2 text-[10px] uppercase tracking-widest hover:opacity-90 transition-all cursor-pointer"
           >
             <FiPlus size={16} /> Add Truck
           </button>
         </div>
       </div>
 
-      {/* Excel Style List */}
+      {/* Table Section */}
       <div className="bg-app-card rounded-[2rem] border border-border-main overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
@@ -175,7 +156,7 @@ const handleDelete = async (id) => {
                   </td>
                   <td className="p-5 font-black text-brand-accent text-xs uppercase italic">{truck.plateNumber}</td>
                   <td className="p-5 text-xs font-bold text-text-muted">{truck.truckType}</td>
-                  <td className="p-5 text-xs font-bold text-text-main">{truck.capacity?.value} Tons</td>
+                  <td className="p-5 text-xs font-bold text-text-main">{truck.capacity?.value || truck.capacityValue} Tons</td>
                   <td className="p-5">
                     <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-tighter ${getStatusColor(truck.status)}`}>
                       {truck.status}
@@ -183,20 +164,23 @@ const handleDelete = async (id) => {
                   </td>
                   <td className="p-5 text-right">
                     <div className="flex justify-end gap-2">
-                      <button onClick={() => { setSelectedTruck(truck); setViewType('view'); setIsModalOpen(true); }} className="p-2 hover:text-brand-primary transition-colors"><FiEye size={16}/></button>
+                      <button onClick={() => { setSelectedTruck(truck); setViewType('view'); setIsModalOpen(true); }} className="p-2 hover:text-brand-primary transition-colors cursor-pointer"><FiEye size={16}/></button>
                       <button onClick={() => { 
                         setSelectedTruck(truck); 
-                        setFormData({ ...truck, capacityValue: truck.capacity.value }); 
+                        setFormData({ ...truck, capacityValue: truck.capacity?.value || '' }); 
                         setViewType('edit'); 
                         setIsModalOpen(true); 
-                      }} className="p-2 hover:text-blue-500 transition-colors"><FiEdit2 size={16}/></button>
-                      <button onClick={() => handleDelete(truck._id)} className="p-2 hover:text-brand-primary transition-colors"><FiTrash2 size={16}/></button>
+                      }} className="p-2 hover:text-blue-500 transition-colors cursor-pointer"><FiEdit2 size={16}/></button>
+                      <button onClick={() => handleDelete(truck._id)} className="p-2 hover:text-red-500 transition-colors cursor-pointer"><FiTrash2 size={16}/></button>
                     </div>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+          {filteredFleet.length === 0 && (
+            <div className="p-10 text-center text-text-muted font-bold text-xs uppercase tracking-widest">No trucks found</div>
+          )}
         </div>
       </div>
 
@@ -211,7 +195,7 @@ const handleDelete = async (id) => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="p-4 bg-app-bg rounded-2xl border border-border-main">
                    <p className="text-[10px] font-black text-text-muted uppercase mb-1">Owner</p>
-                   <p className="font-bold text-sm text-text-main">{selectedTruck?.ownerName}</p>
+                   <p className="font-bold text-sm text-text-main">{selectedTruck?.ownerName || 'N/A'}</p>
                 </div>
                 <div className="p-4 bg-app-bg rounded-2xl border border-border-main">
                    <p className="text-[10px] font-black text-text-muted uppercase mb-1">Type</p>
@@ -224,21 +208,21 @@ const handleDelete = async (id) => {
               </div>
            </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4 p-2">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
-                <label className="text-[10px] font-black text-text-muted uppercase">Truck Name/Model</label>
-                <input required type="text" value={formData.truckName} onChange={(e)=>setFormData({...formData, truckName: e.target.value})} className="w-full p-3 bg-app-bg border border-border-main rounded-xl text-sm outline-none focus:border-brand-primary" />
+                <label className="text-[10px] font-black text-text-muted uppercase px-1">Truck Name/Model</label>
+                <input required type="text" value={formData.truckName} onChange={(e)=>setFormData({...formData, truckName: e.target.value})} className="w-full p-3 bg-app-bg border border-border-main rounded-xl text-sm outline-none focus:border-brand-primary transition-all" />
               </div>
               <div className="space-y-1">
-                <label className="text-[10px] font-black text-text-muted uppercase">Plate Number</label>
-                <input required type="text" value={formData.plateNumber} disabled={viewType==='edit'} onChange={(e)=>setFormData({...formData, plateNumber: e.target.value})} className="w-full p-3 bg-app-bg border border-border-main rounded-xl text-sm outline-none focus:border-brand-primary" />
+                <label className="text-[10px] font-black text-text-muted uppercase px-1">Plate Number</label>
+                <input required type="text" value={formData.plateNumber} disabled={viewType==='edit'} onChange={(e)=>setFormData({...formData, plateNumber: e.target.value})} className="w-full p-3 bg-app-bg border border-border-main rounded-xl text-sm outline-none focus:border-brand-primary disabled:opacity-50" />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
-                <label className="text-[10px] font-black text-text-muted uppercase">Truck Type</label>
-                <select value={formData.truckType} onChange={(e)=>setFormData({...formData, truckType: e.target.value})} className="w-full p-3 bg-app-bg border border-border-main rounded-xl text-sm outline-none appearance-none">
+                <label className="text-[10px] font-black text-text-muted uppercase px-1">Truck Type</label>
+                <select value={formData.truckType} onChange={(e)=>setFormData({...formData, truckType: e.target.value})} className="w-full p-3 bg-app-bg border border-border-main rounded-xl text-sm outline-none">
                    <option value="Mini Truck">Mini Truck</option>
                    <option value="Small Truck">Small Truck</option>
                    <option value="Medium Truck">Medium Truck</option>
@@ -246,13 +230,17 @@ const handleDelete = async (id) => {
                 </select>
               </div>
               <div className="space-y-1">
-                <label className="text-[10px] font-black text-text-muted uppercase">Capacity (Tons)</label>
+                <label className="text-[10px] font-black text-text-muted uppercase px-1">Capacity (Tons)</label>
                 <input required type="number" value={formData.capacityValue} onChange={(e)=>setFormData({...formData, capacityValue: e.target.value})} className="w-full p-3 bg-app-bg border border-border-main rounded-xl text-sm outline-none focus:border-brand-primary" />
               </div>
             </div>
+            <div className="space-y-1">
+                <label className="text-[10px] font-black text-text-muted uppercase px-1">Owner Name</label>
+                <input required type="text" value={formData.ownerName} onChange={(e)=>setFormData({...formData, ownerName: e.target.value})} className="w-full p-3 bg-app-bg border border-border-main rounded-xl text-sm outline-none focus:border-brand-primary" />
+            </div>
             {viewType === 'edit' && (
                <div className="space-y-1">
-                 <label className="text-[10px] font-black text-text-muted uppercase">Status</label>
+                 <label className="text-[10px] font-black text-text-muted uppercase px-1">Status</label>
                  <select value={formData.status} onChange={(e)=>setFormData({...formData, status: e.target.value})} className="w-full p-3 bg-app-bg border border-border-main rounded-xl text-sm outline-none">
                     <option value="Available">Available</option>
                     <option value="On Trip">On Trip</option>
