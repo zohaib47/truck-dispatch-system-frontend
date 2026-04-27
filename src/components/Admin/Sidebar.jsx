@@ -8,7 +8,6 @@ import brand from '../../config/brand'
 
 const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
   
-  // 'path' property add ki gayi hai jo URL se match karegi
   const menuItems = [
     { name: 'Overview', path: '/admin', icon: <FiGrid size={20} />, color: 'text-blue-500' },
     { name: 'Create Load', path: '/admin/create-load', icon: <FiPlusCircle size={20} />, color: 'text-purple-500' },
@@ -18,6 +17,15 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
     { name: 'Drivers', path: '/admin/drivers', icon: <FiUsers size={20} />, color: 'text-emerald-500' },
     { name: 'Contact Message', path: '/admin/messages', icon: <FiMail size={20} />, color: 'text-emerald-500' },
   ];
+
+  const handleLogout = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+
+  toast.success("Logged out successfully!");
+
+  navigate('/');
+};
 
   return (
     <>
@@ -36,7 +44,6 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
         md:translate-x-0 md:sticky md:top-0
       `}>
         
-        {/* Logo Area */}
         <div className="p-8 flex items-center justify-between flex-shrink-0">
           <div className="flex items-center gap-3 group">
             <div className="bg-brand-primary/10 p-2.5 rounded-xl border border-brand-primary/20 shadow-lg shadow-brand-primary/5 transition-transform group-hover:scale-105">
@@ -64,7 +71,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
             <NavLink
               key={item.name}
               to={item.path}
-              end={item.path === '/admin'} // Takay overview hamesha active na dikhe
+              end={item.path === '/admin'} 
               onClick={() => {
                 if(window.innerWidth < 768) setIsSidebarOpen(false);
               }}
@@ -91,10 +98,10 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
           ))}
         </nav>
 
-        {/* Bottom Profile Section */}
         <div className="p-6 border-t border-border-main/50 flex-shrink-0">
-          {/* Profile details here... */}
-          <button className="w-full flex items-center gap-4 px-4 py-3 rounded-xl font-black text-[11px] uppercase tracking-widest text-red-500 hover:bg-red-500/10 transition-all cursor-pointer group">
+          <button 
+          onClick={handleLogout}
+          className="w-full flex items-center gap-4 px-4 py-3 rounded-xl font-black text-[11px] uppercase tracking-widest text-red-500 hover:bg-red-500/10 transition-all cursor-pointer group">
             <FiLogOut size={18} className="group-hover:-translate-x-1 transition-transform"/>
             Sign Out
           </button>

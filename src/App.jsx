@@ -7,6 +7,7 @@ import DriverRoutes from "./pages/Driver/DriverRoutes";
 
 import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
+import ForgotPassword from "./pages/Auth/ForgotPassword";
 
 
 

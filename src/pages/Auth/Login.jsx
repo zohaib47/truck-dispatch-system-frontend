@@ -132,6 +132,34 @@ const Login = () => {
                 {showPass ? <FiEyeOff size={18} /> : <FiEye size={18} />}
               </button>
             </div>
+            {/* Password Input */}
+<div className="relative group">
+  <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-brand-primary" />
+  <input 
+    type={showPass ? "text" : "password"} required
+    className="w-full pl-12 pr-12 py-4 bg-app-bg/40 border border-border-main rounded-2xl outline-none focus:border-brand-primary/40 text-sm font-semibold text-text-main"
+    placeholder="Password"
+    onChange={(e) => setPassword(e.target.value)}
+  />
+  <button 
+    type="button"
+    onClick={() => setShowPass(!showPass)}
+    className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-brand-primary cursor-pointer"
+  >
+    {showPass ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+  </button>
+</div>
+
+{/* --- FORGOT PASSWORD LINK START --- */}
+<div className="flex justify-end px-2">
+  <Link 
+    to="/forgot-password" 
+    className="text-[11px] font-bold text-blue-500 hover:text-blue-600 hover:underline transition-all uppercase tracking-wider"
+  >
+    Forgot Password?
+  </Link>
+</div>
+{/* --- FORGOT PASSWORD LINK END --- */}
           </div>
 
           <button 
