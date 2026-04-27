@@ -72,10 +72,10 @@ const ClientSection = () => {
             Trusted Partners
           </div>
           <h2 className="text-4xl md:text-5xl font-bold text-[#0A1628] font-['Rajdhani'] uppercase tracking-tighter">
-            Companies Jo Hampar <span className="text-[#C9971E]">Bharosa Karti Hain</span>
+            Companies That <span className="text-[#C9971E]">Trust Us</span>
           </h2>
           <p className="text-[#64748B] mt-3 text-sm">
-            Pakistan ki top {count} companies hamare logistics network par rely karti hain
+           Pakistan's top {count} companies rely on our logistics network
           </p>
         </div>
 

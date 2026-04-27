@@ -112,7 +112,7 @@ const DriverDashboard = () => {
                     {/* Revenue Card */}
                     <div className="col-span-1 bg-[#001529] py-10 px-4 rounded-[4rem] shadow-xl text-center flex flex-col justify-between items-center border-4 border-white">
                         <p className="text-[#FFC107] text-[10px] font-black uppercase italic leading-tight">Total<br/>Earnings</p>
-                        <h2 className="text-3xl font-black text-white italic my-4">${stats.revenue}</h2>
+                        <h2 className="text-3xl font-black text-white italic my-4"> <span className='text-lg text-brand-primary'>PKR</span>  {stats.revenue}</h2>
                         <p className="text-white/30 text-[8px] font-bold uppercase tracking-tighter italic leading-tight">Lifetime<br/>Payout</p>
                     </div>
 

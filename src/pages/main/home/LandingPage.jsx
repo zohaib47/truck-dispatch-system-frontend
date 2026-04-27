@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FiTruck, FiUsers, FiPackage, FiTrendingUp, FiArrowRight, FiPhone } from "react-icons/fi";
 import brand from '../../../config/brand';
@@ -11,6 +12,8 @@ import RouteMap from './RouteMap';
 import ServicesSection from './Services';
 import ClientsSection from './ClientSection';
 import IntelligenceSection from './IntelligenceSection';
+
+
 
 const LandingPage = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -31,12 +34,14 @@ const LandingPage = () => {
     { id: 4, label: "Deliveries", value: "8,500", icon: <FiPackage />, color: "text-amber-500", bg: "bg-amber-500/10", change: "🏆 Record High" },
   ];
 
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-[#F0F4FF] text-[#0F172A] font-sans">
 
       <section className="relative h-screen w-full flex items-center overflow-hidden">
 
-        {/* Video — fills entire screen top to bottom */}
+      
         <video
           autoPlay muted loop playsInline
           className="absolute inset-0 z-0 w-full h-full object-cover"
@@ -57,7 +62,7 @@ const LandingPage = () => {
         <div className="relative z-20 w-full max-w-7xl mx-auto px-6 md:px-14 pt-20">
           <div className="max-w-xl">
 
-            {/* Live badge */}
+        
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[10px] font-black tracking-[0.3em] text-[#C9971E] uppercase mb-7">
               <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
               Pakistan's Number 1 Network
@@ -96,15 +101,18 @@ const LandingPage = () => {
                 fontWeight: 500,
               }}
             >
-              {brand.name} ke saath apne business ko digital banayein. Real-time tracking,
-              dedicated trucks aur 98% on-time delivery — sirf aapke liye.
+              Take your business digital with {brand.name}. Real-time tracking, 
+              dedicated trucks, and 98% on-time delivery — exclusively for you.
             </p>
 
-            {/* ── TWO BUTTONS ── */}
             <div className="flex flex-wrap gap-4">
 
-              {/* Primary: See Our Services */}
               <button
+              onClick={() => {
+    document.getElementById('services-section')?.scrollIntoView({ 
+      behavior: 'smooth' 
+    });
+  }}
                 className="group flex items-center gap-2.5 px-8 py-4 rounded-2xl text-sm font-black uppercase tracking-widest transition-all duration-300 hover:-translate-y-1 active:scale-95"
                 style={{
                   background: '#C9971E',
@@ -130,6 +138,7 @@ const LandingPage = () => {
 
               {/* Secondary: Contact Us */}
               <button
+                onClick={() => navigate('/contact')}
                 className="group flex items-center gap-2.5 px-8 py-4 rounded-2xl text-sm font-bold tracking-widest transition-all duration-300 hover:-translate-y-1 active:scale-95"
                 style={{
                   background: 'rgba(255,255,255,0.10)',

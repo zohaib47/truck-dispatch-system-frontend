@@ -19,7 +19,7 @@ const AboutPage = () => {
   const missionTabs = [
     { title: "Safety", desc: `${brand.name} helps people get home safely each and every day with AI-powered safety programs used to train and protect employees.`, img: Media_link.safety },
     { title: "Efficiency", desc: `${brand.name} helps organizations find inefficiencies with end-to-end visibility, so they can improve productivity and reduce costs.`, img:Media_link.efficency },
-    { title: "Sustainability", desc: `${brand.name} helps monitor carbon emissions and track fuel and energy usage, saving customers millions of gallons of fuel annually.`, img: Media_link.sastainability }
+    { title: "Sustainability", desc: `${brand.name} helps monitor carbon emissions and track fuel and energy usage, saving customers millions of gallons of fuel annually.`, img: Media_link.sustainability }
   ];
 
   // ── Mission Tab Switching Logic ──
@@ -212,8 +212,9 @@ const AboutPage = () => {
   </div>
 </section>
 
-     
 
+
+     {/* other pages */}
 
      <AwardSection />
      <HistorySection />
@@ -228,7 +229,7 @@ const AboutPage = () => {
               <FiX size={20} />
             </button>
             <video autoPlay controls className="w-full h-full">
-              <source src={aboutvideo} type="video/webm" />
+              <source src={Media_link.intelligencevideo} type="video/webm" />
             </video>
           </div>
         </div>

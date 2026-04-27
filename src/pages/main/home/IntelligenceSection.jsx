@@ -1,8 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { FiPlay, FiPause, FiX, FiZap } from 'react-icons/fi';
+import React, { useState, useRef, useEffect } from "react";
+import { FiPlay, FiPause, FiX, FiZap } from "react-icons/fi";
 
 // import localvideo from '../../../assets/video/intelligencevideo.webm';
-import { Media_link } from '../../../assets/media';
+import { Media_link } from "../../../assets/media";
 
 const IntelligenceSection = () => {
   const [isPlaying, setIsPlaying] = useState(true);
@@ -56,28 +56,30 @@ const IntelligenceSection = () => {
   };
 
   useEffect(() => {
-    const handler = (e) => { if (e.key === 'Escape') closeModal(); };
-    if (showModal) window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
+    const handler = (e) => {
+      if (e.key === "Escape") closeModal();
+    };
+    if (showModal) window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
   }, [showModal]);
 
   return (
     <>
       {/* Background set to Navy Blue (#0D1B2E) */}
       <section className="relative py-24 bg-[#0D1B2E] overflow-hidden">
-        
         {/* Subtle Grid Pattern Overlay */}
-        <div className="absolute inset-0 opacity-10 pointer-events-none" 
-             style={{ 
-               backgroundImage: 'linear-gradient(#ffffff 0.5px, transparent 0.5px), linear-gradient(90deg, #ffffff 0.5px, transparent 0.5px)', 
-               backgroundSize: '50px 50px' 
-             }} />
+        <div
+          className="absolute inset-0 opacity-10 pointer-events-none"
+          style={{
+            backgroundImage:
+              "linear-gradient(#ffffff 0.5px, transparent 0.5px), linear-gradient(90deg, #ffffff 0.5px, transparent 0.5px)",
+            backgroundSize: "50px 50px",
+          }}
+        />
 
-        {/* Top Blue Accent Line */}
         <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
 
         <div className="max-w-6xl mx-auto px-6 relative z-10">
-          
           {/* ── Header ── */}
           <div className="mb-12 text-center lg:text-left">
             {/* Badge - Using Blue now */}
@@ -90,15 +92,17 @@ const IntelligenceSection = () => {
 
             {/* Heading - White text for dark bg */}
             <h2 className="font-['Rajdhani'] text-4xl md:text-6xl font-bold text-white uppercase leading-none mb-6">
-              Hazaron Customers Ki <br />
-              <span className="text-blue-500">Intelligence</span> Se Apna <br />
-              <span className="text-white">Business</span> Behtar Karein
+              Empower Your <span className="text-brand-primary">Business</span>{" "}
+              <br />
+              With The Intelligence Of <br />
+              <span className="text-brand-primary">Thousands</span> Of Customers
             </h2>
 
             {/* Subtext */}
             <p className="text-gray-400 text-base md:text-lg max-w-2xl leading-relaxed mx-auto lg:mx-0">
-              80 billion+ kilometers ke data aur real-time GPS tracking se humara AI-powered
-              system aapke fleet ki efficiency maximize karta hai — automatically.
+              With over <span className="text-brand-primary">80 billion</span>+ kilometers of data and real-time GPS
+              tracking, our AI-powered system maximizes your fleet's efficiency
+              — automatically.
             </p>
           </div>
 
@@ -107,11 +111,13 @@ const IntelligenceSection = () => {
             <div className="aspect-[16/7] relative">
               <video
                 ref={previewRef}
-                autoPlay muted loop playsInline
-                className="w-full h-full object-cover opacity-80" >
-
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="w-full h-full object-cover opacity-80"
+              >
                 <source src={Media_link.intelligencevideo} type="video/webm" />
-                
               </video>
 
               {/* Scrim Overlay */}
@@ -147,7 +153,6 @@ const IntelligenceSection = () => {
               WATCH FULL VIDEO
             </button>
           </div>
-
         </div>
       </section>
 
@@ -158,7 +163,7 @@ const IntelligenceSection = () => {
           className="fixed inset-0 z-[9999] bg-[#060E1A]/95 backdrop-blur-xl flex items-center justify-center p-4 md:p-10"
         >
           <div
-            onClick={e => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
             className="w-full max-w-5xl bg-[#0D1B2E] rounded-2xl overflow-hidden shadow-2xl border border-white/10 relative"
           >
             {/* Close */}
@@ -172,16 +177,19 @@ const IntelligenceSection = () => {
             <div className="aspect-video relative">
               <video
                 ref={modalRef}
-                loop playsInline
+                loop
+                playsInline
                 className="w-full h-full object-cover"
                 onClick={toggleModal}
               >
                 <source src={localvideo} type="video/webm" />
-                  
               </video>
 
               {!modalPlaying && (
-                <div onClick={toggleModal} className="absolute inset-0 flex items-center justify-center bg-black/40 cursor-pointer">
+                <div
+                  onClick={toggleModal}
+                  className="absolute inset-0 flex items-center justify-center bg-black/40 cursor-pointer"
+                >
                   <div className="w-20 h-20 rounded-full bg-blue-600/90 flex items-center justify-center text-white shadow-2xl">
                     <FiPlay size={32} fill="currentColor" className="ml-1" />
                   </div>
@@ -193,14 +201,16 @@ const IntelligenceSection = () => {
             <div className="p-4 px-6 flex items-center justify-between border-t border-white/5">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-blue-500" />
-                <span className="text-xs font-bold text-white/40 uppercase tracking-widest">FleetPro — Live Demo</span>
+                <span className="text-xs font-bold text-white/40 uppercase tracking-widest">
+                  FleetPro — Live Demo
+                </span>
               </div>
               <button
                 onClick={toggleModal}
                 className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 text-white text-xs font-semibold hover:bg-white/10 transition-colors"
               >
                 {modalPlaying ? <FiPause size={14} /> : <FiPlay size={14} />}
-                {modalPlaying ? 'PAUSE' : 'PLAY'}
+                {modalPlaying ? "PAUSE" : "PLAY"}
               </button>
             </div>
           </div>
