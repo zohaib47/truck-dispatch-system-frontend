@@ -5,7 +5,7 @@ import { notify } from '../../utils/toast';
 
 const ContactMessage = () => {
 
-  const API_BASE_URL = 'http://localhost:5000/api/contact';
+  const API_BASE_URL = 'https://truck-dispatch-system-backend.vercel.app/api/contact';
   const [messages, setMessages] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 

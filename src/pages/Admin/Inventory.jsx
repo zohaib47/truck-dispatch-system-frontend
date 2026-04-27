@@ -4,10 +4,10 @@ import Modal from '../../components/ui/Modal';
 import { notify } from '../../utils/toast';
 import brand from '../../config/brand';
 import axios from 'axios';
-
+import API from '../../services/api'
 const Inventory = () => {
   // --- CONFIGURATION ---
-  const API_BASE_URL = 'http://localhost:5000/api/truck';
+  const API_BASE_URL = 'https://truck-dispatch-system-backend.vercel.app/api/truck';
   
   // Helper function to get headers (Reusable)
   const getAuthHeaders = () => {

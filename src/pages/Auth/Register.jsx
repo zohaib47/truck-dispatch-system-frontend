@@ -36,7 +36,7 @@ const Register = () => {
       const { confirmPassword, ...dataToSend } = formData;
       
       // 3. Exact Backend URL (Port 5000)
-      const response = await axios.post("http://localhost:5000/api/auth/register", dataToSend);
+      const response = await axios.post("https://truck-dispatch-system-backend.vercel.app/api/auth/register", dataToSend);
       
       // 4. Status Code logic (Agar data save ho gaya hai to status 200 ya 201 hoga)
       if (response.status === 200 || response.status === 201) {

@@ -23,7 +23,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Modal from "../../components/ui/Modal";
 
-const API = "http://localhost:5000/api/driver";
+
+const API = "https://truck-dispatch-system-backend.vercel.app/api/driver";
 
 const authHeader = () => {
   const token = localStorage.getItem("token");

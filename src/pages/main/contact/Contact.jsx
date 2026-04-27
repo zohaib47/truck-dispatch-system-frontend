@@ -12,7 +12,7 @@ const Contact = () => {
     e.preventDefault();
     try {
       // Backend API call
-      const res = await axios.post('http://localhost:5000/api/contact/submit', formData);
+      const res = await axios.post('https://truck-dispatch-system-backend.vercel.app/api/contact/submit', formData);
        notify.success("Message sent successfuly.");
     } catch (err) {
       console.error(err);
