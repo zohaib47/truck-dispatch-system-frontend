@@ -4,6 +4,7 @@ import {
   FiGrid, FiTruck, FiBox, FiUsers, FiLogOut, FiX, 
   FiFilePlus, FiMail, FiPlusCircle 
 } from "react-icons/fi";
+import { useNavigate } from 'react-router-dom';
 import { toast, Toaster } from 'react-hot-toast';
 import brand from '../../config/brand'
 
@@ -19,13 +20,15 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
     { name: 'Contact Message', path: '/admin/messages', icon: <FiMail size={20} />, color: 'text-emerald-500' },
   ];
 
+const navigate = useNavigate();
+
   const handleLogout = () => {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
 
   toast.success("Logged out successfully!");
 
-  navigate('/login');
+  navigate('/');
 };
 
   return (
