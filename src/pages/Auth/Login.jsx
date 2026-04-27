@@ -5,6 +5,7 @@ import axios from 'axios';
 import { toast, Toaster } from 'react-hot-toast';
 import ThemeToggle from '../../components/theme/ThemeToggle';
 import brand from '../../config/brand';
+import API from '../../services/api'
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -19,7 +20,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:5000/api/auth/login", {
+      const response = await API.post("/auth/login", {
         email,
         password,
       });
@@ -70,14 +71,13 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center p-6 font-sans relative overflow-hidden transition-colors duration-500">
       <Toaster position="top-right" />
       
-      {/* Background Video */}
-      <video 
+      {/* Background Video  */}
+      {/* <video 
         autoPlay loop muted playsInline
         className="absolute top-0 left-0 w-full h-full object-cover z-0"
       >
         <source src="/assets/videos/truck-bg.mp4" type="video/mp4" />
-        {/* Agar assets mein video nahi hai to online link use kar sakte ho */}
-      </video>
+      </video> */}
 
       {/* Overlay to make content readable */}
       <div className="absolute top-0 left-0 w-full h-full bg-black/50 z-10"></div>
