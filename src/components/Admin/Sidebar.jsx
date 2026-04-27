@@ -25,7 +25,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
 
   toast.success("Logged out successfully!");
 
-  navigate('/');
+  navigate('/login');
 };
 
   return (
